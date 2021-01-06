@@ -2,16 +2,21 @@ import React from 'react';
 import { StyleSheet, Text, View, Button } from 'react-native';
 import { FontAwesome } from '@expo/vector-icons';
 
-const Item = ({ item, handleInclase, handleDecrease, handleDelete }) => (
+const Item = ({ item, handleInclase, handleDecrease, handleDelete, handleDone, enableDone = false }) => (
   <View style={styles.item}>
-    <Text style={styles.title}>{item.name}</Text>
+    <Text style={item.done ? styles.titleDone : styles.title}>{item.name}</Text>
     <View style={styles.actions}>
       <View style={styles.actionsButton}>
-        <Button title='-' style={styles.listButton} onPress={() => handleDecrease(item.id)} />
+        <Button title='-' style={styles.listButton} onPress={() => handleDecrease(item.id)} disabled={item.done ? true : false} />
           <Text style={styles.textButtons}>{item.amount}</Text>
-        <Button title='+' style={styles.listButton} onPress={() => handleInclase(item.id)} />
+        <Button title='+' style={styles.listButton} onPress={() => handleInclase(item.id)} disabled={item.done ? true : false} />
       </View>
       <View style={styles.actionButtonList}>
+        {enableDone && (
+          <View style={styles.spaceButtons}>
+            <FontAwesome.Button name="check" backgroundColor="green" iconStyle={{marginRight: 0}} onPress={() => handleDone(item.id)} /> 
+          </View>
+        )}
         <FontAwesome.Button name="trash" backgroundColor="red" iconStyle={{marginRight: 0}} onPress={() => handleDelete(item.id)} /> 
       </View>
     </View>    
@@ -62,13 +67,20 @@ const styles = StyleSheet.create({
     color: 'black',
     fontSize: 16,
   },
+  titleDone: {
+    maxWidth: '50%',
+    color: 'black',
+    color: 'black',
+    fontSize: 16,
+    textDecorationLine: 'line-through',
+  },
   actionButtonList: {
     flexDirection: 'row',
     justifyContent: 'space-between',
     alignItems: 'center',
   },
   spaceButtons: {
-    width: 8,
+    marginRight: 8,
   }
 });
 

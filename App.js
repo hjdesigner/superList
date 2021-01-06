@@ -7,6 +7,7 @@ import { StyleSheet, Text, View } from 'react-native';
 import Header from './src/components/Header';
 import home from './src/views/home';
 import addList from './src/views/addList';
+import list from './src/views/list';
 
 const Tab = createBottomTabNavigator();
 
@@ -21,12 +22,14 @@ export default function App() {
             let iconName;
 
             if (route.name === 'Inicio') {
-              iconName = focused ? 'ios-information-circle' : 'ios-information-circle-outline';
+              iconName = focused ? 'ios-information-circle-outline' : 'ios-information-circle-outline';
             }
-
+            if (route.name === 'Minha lista') {
+              iconName = focused ? 'cart-outline' : 'cart-outline';
+            }
             if (route.name === 'Adicionar item') {
               iconName = focused ? 'add-circle-outline' : 'add-circle-outline';
-            }
+            }            
 
             // You can return any component that you like here!
             return <Ionicons name={iconName} size={size} color={color} />;
@@ -41,6 +44,7 @@ export default function App() {
           }}
         >
           <Tab.Screen name="Inicio" component={home} />
+          <Tab.Screen name="Minha lista" component={list} />
           <Tab.Screen name="Adicionar item" component={addList} />
         </Tab.Navigator>
         <StatusBar style="auto" />
