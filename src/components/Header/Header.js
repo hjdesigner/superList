@@ -18,7 +18,7 @@ const styles = StyleSheet.create({
     backgroundColor: '#4756C2',
     alignItems: 'center',
     width: '100%',
-    paddingTop: paddingIos,
+    paddingTop: 50,
     paddingBottom: 20,
   },
   title: {

@@ -48,6 +48,30 @@ function ListProvider({ children }) {
     ]
     await addData(addList);
   }
+
+  const handleSand = async () => {
+    setList([
+      ...list,
+      {
+        id: uuidv4(),
+        name: value,
+        amount: 1,
+        done: false
+      }
+    ]);
+    setValue('');
+    const addList = [
+      ...list,
+      {     
+        id: uuidv4(),
+        name: value,
+        amount: 1,
+        done: false
+      }
+    ]
+    await addData(addList);
+  }
+
   const handleInclase = async (id) => {
     const newList = list.map(item => {
       if (item.id === id) {
@@ -109,6 +133,7 @@ function ListProvider({ children }) {
         handleDecrease,
         handleDelete,
         handleDone,
+        handleSand,
       }}
     >
       {children}

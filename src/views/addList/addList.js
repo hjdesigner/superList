@@ -1,5 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import { StyleSheet, Text, View, TextInput, SafeAreaView, FlatList } from 'react-native';
+import { FontAwesome } from '@expo/vector-icons';
 import { useList } from '../../hooks';
 import List from '../../components/list';
 
@@ -16,6 +17,7 @@ export default function App() {
     handleInclase,
     handleDecrease,
     handleDelete,
+    handleSand,
   } = useList();
 
   useEffect(() => {
@@ -26,7 +28,7 @@ export default function App() {
   return (
     <View style={styles.container}>
       <Text style={styles.text}>Digite o nome do produto, depois coloque a quantidade</Text>
-      <View>
+      <View style={styles.fields}>
         <TextInput
           style={styles.input}
           autoFocus={true}
@@ -34,6 +36,14 @@ export default function App() {
           onChangeText={text => setValue(text)}
           onSubmitEditing={() => handlePress(value)}
           value={value} />
+        <FontAwesome.Button
+          name="plus"
+          backgroundColor="green"
+          iconStyle={{marginRight: 4}}
+          onPress={() => handleSand()} 
+        >
+          Incluir
+        </FontAwesome.Button>
       </View>
       <SafeAreaView style={styles.containerList}>
         <FlatList data={list} renderItem={renderItem} keyExtractor={item => item.id} />
@@ -56,16 +66,22 @@ const styles = StyleSheet.create({
     marginTop: 20,
   },
   input: {
-    marginTop: 10,
-    marginBottom: 10,
-    height: 60,
+    height: 36,
     borderBottomColor: '#BACCE8',
     borderBottomWidth: 3,
     paddingLeft: 16,
     paddingRight: 16,
     fontSize: 15,
+    width: '75%',
   },
   containerList: {
     flex: 1,
   },
+  fields: {
+    flexDirection: 'row',
+    justifyContent: 'space-between',
+    alignItems: 'center',
+    marginTop: 24,
+    marginBottom: 16,
+  }
 });
