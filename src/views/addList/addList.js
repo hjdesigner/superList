@@ -1,91 +1,26 @@
 import React, { useState, useEffect } from 'react';
 import { StyleSheet, Text, View, TextInput, SafeAreaView, FlatList } from 'react-native';
-import AsyncStorage from '@react-native-async-storage/async-storage';
-import { v4 as uuidv4 } from 'uuid';
+import { useList } from '../../hooks';
 import List from '../../components/list';
 
 
 export default function App() {
-  const [list, setList] = useState([]);
-  const [value, setValue] = useState('');
+  const {
+    list,
+    setList,
+    value,
+    setValue,
+    getData,
+    addData,
+    handlePress,
+    handleInclase,
+    handleDecrease,
+    handleDelete,
+  } = useList();
 
   useEffect(() => {
-    const getData = async () => {
-      try {
-        const jsonValue = await AsyncStorage.getItem('@list')
-        return jsonValue != null ? JSON.parse(jsonValue) : null;
-      } catch(e) {
-        // error reading value
-      }
-    }
-
     getData().then(data => data !== null ? setList(data) : []);
-  });
-
-  const addData = async (value) => {
-    try {
-      const jsonValue = JSON.stringify(value)
-      await AsyncStorage.setItem('@list', jsonValue)
-    } catch {
-      console.log('error')
-    }
-  }
-  
-  const handlePress = async (value) => {
-    setList([
-      ...list,
-      {
-        id: uuidv4(),
-        name: value,
-        amount: 1,
-        done: false
-      }
-    ]);
-    setValue('');
-    const addList = [
-      ...list,
-      {     
-        id: uuidv4(),
-        name: value,
-        amount: 1,
-        done: false
-      }
-    ]
-    await addData(addList);
-  }
-  const handleInclase = async (id) => {
-    const newList = list.map(item => {
-      if (item.id === id) {
-        return { 
-          ...item, 
-          amount: item.amount + 1 
-        }
-      }
-      return item;
-    });
-    setList(newList);
-    await addData(newList);
-  }
-
-  const handleDecrease = async (id) => {
-    const newList = list.map(item => {
-      if (item.id === id) {
-        return { 
-          ...item, 
-          amount: item.amount > 1 ? item.amount - 1 : 1,
-        }
-      }
-      return item;
-    });
-    setList(newList);
-    await addData(newList);
-  }
-
-  const handleDelete = async (id) => {
-    const newList = list.filter(item => item.id !== id);
-    setList(newList);
-    await addData(newList);
-  }
+  }, []);
 
   const renderItem = ({ item }) => <List item={item} handleInclase={handleInclase} handleDecrease={handleDecrease} handleDelete={handleDelete} />;
   return (
