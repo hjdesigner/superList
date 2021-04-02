@@ -10,6 +10,7 @@ function ListProvider({ children }) {
   const [nameList, setNameList] = useState('');
   const [statusAddItem, setAddStatusItem] = useState(false);
   const [newList, setNewList] = useState({});
+  const [isUpdate, setIsUpdate] = useState(false);
 
   const addNameList = (value) => setNameList(value);
 
@@ -32,15 +33,54 @@ function ListProvider({ children }) {
     }
   }
 
-  const addData = async () => {
-    try {
-      const jsonValue = JSON.stringify(newList);
-      await AsyncStorage.setItem('@list', jsonValue);
-      setNewList({
-        items: [],
+  const uploadList = (value) => {
+    setList(value);
+  }
+
+  const handleListNames = (id) => {
+    const item = list.filter(item => item.id === id);
+    setNameList(item[0].nameList);
+    setNewList(item[0]);
+    setIsUpdate(true);
+    setAddStatusItem(true);
+  }
+
+  const handleCancel = () => {
+    setNewList({
+      items: [],
+    });
+    setNameList('');
+    setValue('');
+    setIsUpdate(false);
+    setAddStatusItem(false);
+  }
+
+  const addData = async (isUpload, id) => {
+    if (isUpload) {
+      const updateLists = list.map(item => {
+        if (item.id === id) {
+          return newList;
+        }
+        return item;
       });
-      setNameList('');
-      setAddStatusItem(false);
+      setList(updateLists);
+      try {
+        const jsonValue = JSON.stringify(updateLists);
+        await AsyncStorage.setItem('@list', jsonValue);
+        handleCancel();
+        return;
+      } catch {
+        console.log('error')
+        return;
+      }
+    }
+    const lists = list;
+    lists.push(newList);
+    setList(lists);
+    try {
+      const jsonValue = JSON.stringify(lists);
+      await AsyncStorage.setItem('@list', jsonValue);
+      handleCancel();
     } catch {
       console.log('error')
     }
@@ -139,6 +179,10 @@ function ListProvider({ children }) {
         handleCreateList,
         newList,
         addData,
+        uploadList,
+        handleListNames,
+        isUpdate,
+        handleCancel,
       }}
     >
       {children}

@@ -3,12 +3,13 @@ import { StyleSheet, Text, View, TextInput, SafeAreaView, FlatList, TouchableOpa
 import { FontAwesome } from '@expo/vector-icons';
 import { useList } from '../../hooks';
 import List from '../../components/list';
+import ListNames from '../../components/ListNames';
 
 
 export default function App() {
   const {
     nameList,
-    setList,
+    list,
     statusAddItem,
     value,
     setValue,
@@ -21,13 +22,18 @@ export default function App() {
     handleCreateList,
     newList,
     addData,
+    uploadList,
+    handleListNames,
+    isUpdate,
+    handleCancel,
   } = useList();
 
   useEffect(() => {
-    getData().then(data => data !== null ? setList(data) : []);
+    getData().then(data => data !== null ? uploadList(data) : []);
   }, []);
 
   const renderItem = ({ item }) => <List item={item} handleInclase={handleInclase} handleDecrease={handleDecrease} handleDelete={handleDelete} />;
+  const renderListNames = ({ item }) => <ListNames item={item} handleListNames={handleListNames} />;
 
   return (
     <View style={styles.container}>
@@ -52,6 +58,11 @@ export default function App() {
           </FontAwesome.Button>
         </View>)}
       </View>
+      {!statusAddItem && (<View>
+        <SafeAreaView style={styles.containerList}>
+          <FlatList data={list} renderItem={renderListNames} keyExtractor={item => item.id} />
+        </SafeAreaView>
+      </View>)}
       {statusAddItem && (<View>
         <Text style={styles.text}>Digite o nome do produto, depois coloque a quantidade</Text>
         <View style={styles.fields}>
@@ -72,10 +83,14 @@ export default function App() {
           </FontAwesome.Button>
         </View>
         <View>
-          {newList.items.length ? (<View>
-            <TouchableOpacity style={styles.button} onPress={addData}>
+          {newList.items.length ? (<View style={styles.actions}>
+            <TouchableOpacity style={styles.button} onPress={() => addData(isUpdate, newList.id)}>
               <Text style={styles.buttonText}>Salvar minha lista</Text>
-            </TouchableOpacity></View>
+            </TouchableOpacity>
+            <TouchableOpacity style={styles.buttonCancel} onPress={() => handleCancel()}>
+              <Text style={styles.buttonText}>Cancelar</Text>
+            </TouchableOpacity>
+            </View>
           ) : false}
         </View>
         <SafeAreaView style={styles.containerList}>
@@ -123,9 +138,21 @@ const styles = StyleSheet.create({
     alignItems: 'center',
     justifyContent: 'center',
     backgroundColor: 'rgb(71, 86, 194)',
+    width: '48%',
   },
   buttonText: {
     color: '#FFFFFF',
     fontWeight: 'bold',
+  },
+  actions: {
+    flexDirection: 'row',
+    justifyContent: 'space-between',
+  },
+  buttonCancel: {
+    height: 36,
+    alignItems: 'center',
+    justifyContent: 'center',
+    backgroundColor: '#dc3545',
+    width: '48%',
   }
 });
