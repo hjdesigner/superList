@@ -7,6 +7,21 @@ const ListContext = createContext();
 function ListProvider({ children }) {
   const [list, setList] = useState([]);
   const [value, setValue] = useState('');
+  const [nameList, setNameList] = useState('');
+  const [statusAddItem, setAddStatusItem] = useState(false);
+  const [newList, setNewList] = useState({});
+
+  const addNameList = (value) => setNameList(value);
+
+  const handleCreateList = () => {
+    setAddStatusItem(true);
+    setNewList({
+      ...newList,
+      id: uuidv4(),
+      nameList: nameList,
+      items: [],
+    });
+  }
 
   const getData = async () => {
     try {
@@ -17,63 +32,40 @@ function ListProvider({ children }) {
     }
   }
 
-  const addData = async (value) => {
+  const addData = async () => {
     try {
-      const jsonValue = JSON.stringify(value)
-      await AsyncStorage.setItem('@list', jsonValue)
+      const jsonValue = JSON.stringify(newList);
+      await AsyncStorage.setItem('@list', jsonValue);
+      setNewList({
+        items: [],
+      });
+      setNameList('');
+      setAddStatusItem(false);
     } catch {
       console.log('error')
     }
   }
   
-  const handlePress = async (value) => {
-    setList([
-      ...list,
-      {
-        id: uuidv4(),
-        name: value,
-        amount: 1,
-        done: false
-      }
-    ]);
+  const handlePress = async () => {
+    setNewList({
+      ...newList,
+      items: [
+        ...newList.items,
+        {
+          id: uuidv4(),
+          name: value,
+          amount: 1,
+          done: false
+        },
+      ],
+    });
     setValue('');
-    const addList = [
-      ...list,
-      {     
-        id: uuidv4(),
-        name: value,
-        amount: 1,
-        done: false
-      }
-    ]
-    await addData(addList);
-  }
-
-  const handleSand = async () => {
-    setList([
-      ...list,
-      {
-        id: uuidv4(),
-        name: value,
-        amount: 1,
-        done: false
-      }
-    ]);
-    setValue('');
-    const addList = [
-      ...list,
-      {     
-        id: uuidv4(),
-        name: value,
-        amount: 1,
-        done: false
-      }
-    ]
-    await addData(addList);
+    // await addData();
   }
 
   const handleInclase = async (id) => {
-    const newList = list.map(item => {
+    const items = newList.items;
+    let newItems = items.map(item => {
       if (item.id === id) {
         return { 
           ...item, 
@@ -82,12 +74,15 @@ function ListProvider({ children }) {
       }
       return item;
     });
-    setList(newList);
-    await addData(newList);
+    setNewList({
+      ...newList,
+      items: newItems,
+    });
   }
 
   const handleDecrease = async (id) => {
-    const newList = list.map(item => {
+    const items = newList.items;
+    let newItems = items.map(item => {
       if (item.id === id) {
         return { 
           ...item, 
@@ -96,14 +91,19 @@ function ListProvider({ children }) {
       }
       return item;
     });
-    setList(newList);
-    await addData(newList);
+    setNewList({
+      ...newList,
+      items: newItems,
+    });
   }
 
   const handleDelete = async (id) => {
-    const newList = list.filter(item => item.id !== id);
-    setList(newList);
-    await addData(newList);
+    const items = newList.items;
+    let newItems = items.filter(item => item.id !== id);
+    setNewList({
+      ...newList,
+      items: newItems,
+    });
   }
   const handleDone = async (id) => {
     const newList = list.map(item => {
@@ -123,9 +123,11 @@ function ListProvider({ children }) {
     <ListContext.Provider
       value={{
         list,
+        nameList,
         setList,
         value,
         setValue,
+        statusAddItem,
         getData,
         addData,
         handlePress,
@@ -133,7 +135,10 @@ function ListProvider({ children }) {
         handleDecrease,
         handleDelete,
         handleDone,
-        handleSand,
+        addNameList,
+        handleCreateList,
+        newList,
+        addData,
       }}
     >
       {children}
