@@ -9,6 +9,7 @@ function ListProvider({ children }) {
   const [value, setValue] = useState('');
   const [nameList, setNameList] = useState('');
   const [statusAddItem, setAddStatusItem] = useState(false);
+  const [statusUpdateList, setStatusUpdateList] = useState(false);
   const [newList, setNewList] = useState({});
   const [isUpdate, setIsUpdate] = useState(false);
 
@@ -43,6 +44,15 @@ function ListProvider({ children }) {
     setNewList(item[0]);
     setIsUpdate(true);
     setAddStatusItem(true);
+  }
+
+  const handleSelectList = (id) => {
+    const item = list.filter(item => item.id === id);
+    setNameList(item[0].nameList);
+    setNewList(item[0]);
+    setStatusUpdateList(true);
+    // setIsUpdate(true);
+    // setAddStatusItem(true);
   }
 
   const handleCancel = () => {
@@ -86,6 +96,30 @@ function ListProvider({ children }) {
     }
   }
   
+  const updateData = async (id) => {
+    const updateLists = list.map(item => {
+      if (item.id === id) {
+        return newList;
+      }
+        return item;
+    });
+    setList(updateLists);
+    try {
+      const jsonValue = JSON.stringify(updateLists);
+      await AsyncStorage.setItem('@list', jsonValue);
+    } catch {
+      console.log('error')
+    }
+  }
+
+  const goBack = () => {
+    setNewList({
+      items: [],
+    });
+    setNameList('');
+    setStatusUpdateList(false);
+  }
+
   const handlePress = async () => {
     setNewList({
       ...newList,
@@ -146,7 +180,8 @@ function ListProvider({ children }) {
     });
   }
   const handleDone = async (id) => {
-    const newList = list.map(item => {
+    const items = newList.items;
+    const newItems = items.map(item => {
       if (item.id === id) {
         return { 
           ...item, 
@@ -155,8 +190,10 @@ function ListProvider({ children }) {
       }
       return item;
     });
-    setList(newList);
-    await addData(newList);
+    setNewList({
+      ...newList,
+      items: newItems,
+    });
   }
 
   return (
@@ -183,6 +220,10 @@ function ListProvider({ children }) {
         handleListNames,
         isUpdate,
         handleCancel,
+        handleSelectList,
+        statusUpdateList,
+        updateData,
+        goBack,
       }}
     >
       {children}
