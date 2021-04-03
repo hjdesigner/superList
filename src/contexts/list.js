@@ -51,8 +51,6 @@ function ListProvider({ children }) {
     setNameList(item[0].nameList);
     setNewList(item[0]);
     setStatusUpdateList(true);
-    // setIsUpdate(true);
-    // setAddStatusItem(true);
   }
 
   const handleCancel = () => {
@@ -63,6 +61,17 @@ function ListProvider({ children }) {
     setValue('');
     setIsUpdate(false);
     setAddStatusItem(false);
+  }
+
+  const initalReset = () => {
+    setNewList({
+      items: [],
+    });
+    setNameList('');
+    setValue('');
+    setIsUpdate(false);
+    setAddStatusItem(false);
+    setStatusUpdateList(false);
   }
 
   const addData = async (isUpload, id) => {
@@ -224,6 +233,7 @@ function ListProvider({ children }) {
         statusUpdateList,
         updateData,
         goBack,
+        initalReset,
       }}
     >
       {children}
