@@ -42,7 +42,7 @@ const Routes = () => {
           }}
         >
         <Tab.Screen name="Inicio" component={home} />
-        <Tab.Screen name="Minha lista" component={list} listeners={() => ({
+        <Tab.Screen name="Minhas listas" component={list} listeners={() => ({
           tabPress: () => {
             initalReset();
           },

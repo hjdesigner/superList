@@ -12,6 +12,7 @@ function ListProvider({ children }) {
   const [statusUpdateList, setStatusUpdateList] = useState(false);
   const [newList, setNewList] = useState({});
   const [isUpdate, setIsUpdate] = useState(false);
+  const [statusSuccessUpdate, setStatusSuccessUpdate] = useState(false);
 
   const addNameList = (value) => setNameList(value);
 
@@ -72,6 +73,7 @@ function ListProvider({ children }) {
     setIsUpdate(false);
     setAddStatusItem(false);
     setStatusUpdateList(false);
+    setStatusSuccessUpdate(false);
   }
 
   const addData = async (isUpload, id) => {
@@ -106,6 +108,7 @@ function ListProvider({ children }) {
   }
   
   const updateData = async (id) => {
+    setStatusSuccessUpdate(false);
     const updateLists = list.map(item => {
       if (item.id === id) {
         return newList;
@@ -116,6 +119,7 @@ function ListProvider({ children }) {
     try {
       const jsonValue = JSON.stringify(updateLists);
       await AsyncStorage.setItem('@list', jsonValue);
+      setStatusSuccessUpdate(true);
     } catch {
       console.log('error')
     }
@@ -127,6 +131,7 @@ function ListProvider({ children }) {
     });
     setNameList('');
     setStatusUpdateList(false);
+    setStatusSuccessUpdate(false);
   }
 
   const handlePress = async () => {
@@ -147,6 +152,7 @@ function ListProvider({ children }) {
   }
 
   const handleInclase = async (id) => {
+    setStatusSuccessUpdate(false);
     const items = newList.items;
     let newItems = items.map(item => {
       if (item.id === id) {
@@ -164,6 +170,7 @@ function ListProvider({ children }) {
   }
 
   const handleDecrease = async (id) => {
+    setStatusSuccessUpdate(false);
     const items = newList.items;
     let newItems = items.map(item => {
       if (item.id === id) {
@@ -181,6 +188,7 @@ function ListProvider({ children }) {
   }
 
   const handleDelete = async (id) => {
+    setStatusSuccessUpdate(false);
     const items = newList.items;
     let newItems = items.filter(item => item.id !== id);
     setNewList({
@@ -189,6 +197,7 @@ function ListProvider({ children }) {
     });
   }
   const handleDone = async (id) => {
+    setStatusSuccessUpdate(false);
     const items = newList.items;
     const newItems = items.map(item => {
       if (item.id === id) {
@@ -234,6 +243,7 @@ function ListProvider({ children }) {
         updateData,
         goBack,
         initalReset,
+        statusSuccessUpdate,
       }}
     >
       {children}

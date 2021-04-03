@@ -18,6 +18,7 @@ const list = () => {
     newList,
     updateData,
     goBack,
+    statusSuccessUpdate,
   } = useList();
 
   useEffect(() => {
@@ -48,6 +49,7 @@ const list = () => {
             <Text style={styles.buttonText}>Voltar</Text>
           </TouchableOpacity>
         </View>
+        {statusSuccessUpdate && <View style={styles.success}><Text style={styles.successText}>Lista atualizada com sucesso!</Text></View>}
         <SafeAreaView style={styles.containerList}>
           <FlatList data={newList.items} renderItem={renderItem} keyExtractor={item => item.id} />
         </SafeAreaView>
@@ -91,8 +93,22 @@ const styles = StyleSheet.create({
     justifyContent: 'center',
     backgroundColor: '#17a2b8',
     width: '48%',
-  }
-
+  },
+  success: {
+    paddingTop: 8,
+    paddingBottom: 8,
+    paddingLeft: 8,
+    paddingRight: 8,
+    marginBottom: 8,
+    marginTop: 8,
+    borderWidth: 1,
+    borderRadius: '0.25rem',
+    backgroundColor: '#d4edda',
+    borderColor: '#c3e6cb',
+  },
+  successText: {
+    color: '#155724',
+  },
 });
 
 export default list;
