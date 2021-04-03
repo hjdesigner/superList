@@ -3,7 +3,7 @@ import { StyleSheet, Text, View, Button } from 'react-native';
 import { FontAwesome } from '@expo/vector-icons';
 
 const Item = ({ item, handleInclase, handleDecrease, handleDelete, handleDone, enableDone = false }) => (
-  <View style={styles.item}>
+  <View style={item.done ? styles.itemDone : styles.item}>
     <Text style={item.done ? styles.titleDone : styles.title}>{item.name}</Text>
     <View style={styles.actions}>
       <View style={styles.actionsButton}>
@@ -14,7 +14,7 @@ const Item = ({ item, handleInclase, handleDecrease, handleDelete, handleDone, e
       <View style={styles.actionButtonList}>
         {enableDone && (
           <View style={styles.spaceButtons}>
-            <FontAwesome.Button name="check" backgroundColor="green" iconStyle={{marginRight: 0}} onPress={() => handleDone(item.id)} /> 
+            <FontAwesome.Button name={item.done ? "undo" : "check"} backgroundColor={item.done ? "#ffc107" : "green"} iconStyle={{marginRight: 0}} onPress={() => handleDone(item.id)} /> 
           </View>
         )}
         <FontAwesome.Button name="trash" backgroundColor="red" iconStyle={{marginRight: 0}} onPress={() => handleDelete(item.id)} /> 
@@ -30,8 +30,22 @@ const styles = StyleSheet.create({
     justifyContent: 'space-between',
     paddingTop: 16,
     paddingBottom: 16,
+    paddingLeft: 8,
+    paddingRight: 8,
     borderBottomWidth: 1,
     borderBottomColor: '#e2dede',
+  },
+  itemDone: {
+    alignItems: 'center',
+    flexDirection: 'row',
+    justifyContent: 'space-between',
+    paddingTop: 16,
+    paddingBottom: 16,
+    paddingLeft: 8,
+    paddingRight: 8,
+    borderBottomWidth: 1,
+    borderBottomColor: '#e2dede',
+    backgroundColor: '#ece9e9',
   },
   listButton: {
     width: 15,
